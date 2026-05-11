@@ -28,9 +28,34 @@ public class ParkingFeeCalculatorTests
         Assert.Equal(0m, result.TotalFee);
     }
 
+    #region Verify CheckIn before CheckOut
+    [Fact]
+    public void Verify_CheckOut_Before_checkIn()
+    {
+        // Arragne
+        var checkIn = new DateTime(2025,12,12,1,0,0);
+        var checkOut = checkIn.AddHours(1);
+        // act
+        var result = Assert.Throws<ArgumentException>(() =>
+        {
+            _calculator.CalculateFee(
+            VehicleType.Car,
+            MembershipTier.Platinum,
+            checkIn,
+            checkOut
+        );
+        });
+    
+        // Assert
+        Assert.Equal("Checkin before checkOut",result.Message);
+    }
+
+    #endregion
+
     #region Basic Fee Calculation
     // Test basic hourly rates for each vehicle type
     // Consider using [Theory] with [InlineData] for multiple scenarios
+    
     #endregion
 
     #region Grace Period

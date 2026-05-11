@@ -62,6 +62,15 @@ public class ParkingFeeCalculator
     {
         // TODO: Implement the 9-step fee calculation using TDD.
         // Write a failing test first (RED), then implement just enough to pass (GREEN).
+
+        // alway checkIn before  checkout
+        if(checkOut >= checkIn) 
+            throw new ArgumentException("Checkin before checkOut");
+
+        
+
+
+
         throw new NotImplementedException(
             "Implement this method using TDD — see the assignment spec for the 9-step calculation flow.");
     }
