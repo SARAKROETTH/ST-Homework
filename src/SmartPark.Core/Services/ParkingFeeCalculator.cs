@@ -64,14 +64,38 @@ public class ParkingFeeCalculator
         // Write a failing test first (RED), then implement just enough to pass (GREEN).
 
         // alway checkIn before  checkout
-        if(checkOut >= checkIn) 
+        if(checkOut < checkIn) 
             throw new ArgumentException("Checkin before checkOut");
+
+        var totalMinutes = (checkOut - checkIn).TotalMinutes;
+
+        // Lost ticket penalty
+        // 31 min
+        // If ticket is lost, add 20,000 KHR
+        var lostTicketPenalty = isLostTicket ? LostTicketPenalty : 0m; //false
+
+
+        if (totalMinutes <= GracePeriodMinutes)
+        {
+            return new ParkingFeeResult
+            {
+                TotalFee = lostTicketPenalty,
+              Breakdown= "Free"
+            };
+            
+        }
+
+        if (isLostTicket)
+        {
+            return new ParkingFeeResult
+            {
+                TotalFee= lostTicketPenalty
+            };
+        }
+
+       throw new ArgumentException("Implement the 9-step fee calculation using TDD.");
 
         
 
-
-
-        throw new NotImplementedException(
-            "Implement this method using TDD — see the assignment spec for the 9-step calculation flow.");
     }
 }

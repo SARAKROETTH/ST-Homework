@@ -60,6 +60,27 @@ public class ParkingFeeCalculatorTests
 
     #region Grace Period
     // Test the free parking window and its boundaries
+    [Theory]
+    [InlineData(0)]
+    [InlineData(5)]
+    [InlineData(15)]
+    [InlineData(20)]
+    [InlineData(30)]
+    public void Calculate_Grace_Period_ReturnFree(
+        int minute
+    )
+    {
+        //Arrange 
+        var checkIn = new DateTime(2026,5,11,3,0,0,0);
+        var checkOut = checkIn.AddMinutes(minute);
+
+        // Act 
+        var result = _calculator.CalculateFee(VehicleType.Motorcycle,MembershipTier.Guest,checkIn,checkOut);
+
+        // Assert 
+        Assert.Equal("Free",result.Breakdown);
+        
+    }
     #endregion
 
     #region Duration Rounding
@@ -88,6 +109,25 @@ public class ParkingFeeCalculatorTests
 
     #region Lost Ticket
     // Test the penalty and how it interacts with other fee modifiers
+    [Theory]
+    [InlineData(VehicleType.Car, default(MembershipTier))]
+    public void Calculate_Lost_Ticket(
+        VehicleType vehicleType,
+        MembershipTier membershipTier
+    ){
+
+        // Arrange
+        var checkIn = new DateTime(2026,5,11,1,0,0);
+        var checkOut = checkIn.AddHours(1);
+
+        // Act
+        var result = _calculator.CalculateFee(vehicleType,membershipTier,checkIn,checkOut,true);
+
+        // Assert 
+        Assert.Equal(20000m,result.TotalFee);
+
+    }
+    
     #endregion
 
     #region Edge Cases
