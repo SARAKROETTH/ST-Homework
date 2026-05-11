@@ -58,6 +58,29 @@ public class ParkingFeeCalculatorTests
     
     #endregion
 
+
+    #region Duration: billableHours 
+    [Theory]
+    [InlineData(3)]
+    [InlineData(2)]
+    [InlineData(1)]
+    public void Calculate_Duration_BillableHours(
+        int hour
+    )
+    {
+        // Arrange 
+        var checkIn = new DateTime(2025,12,12,1,0,0);
+
+        var checkOut = checkIn.AddHours(hour);
+        // Act
+        var result  =  _calculator.CalculateFee(VehicleType.Car,MembershipTier.Guest,checkIn,checkOut);
+
+        // Assert 
+        Assert.Equal(hour,result.TotalFee);
+    }
+
+    #endregion
+
     #region Grace Period
     // Test the free parking window and its boundaries
     [Theory]
@@ -85,10 +108,15 @@ public class ParkingFeeCalculatorTests
 
     #region Duration Rounding
     // Test how partial hours are rounded for billing
+
+
+
     #endregion
 
     #region Daily Cap
-    // Test that fees respect maximum daily limits per vehicle type
+    // Test that fees respect maximum daily limits per vehicle typep>te
+
+
     #endregion
 
     #region Overnight Fee

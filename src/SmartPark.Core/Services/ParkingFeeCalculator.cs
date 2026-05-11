@@ -44,7 +44,7 @@ public class ParkingFeeCalculator
     /// Steps:
     ///   1. Validate: checkOut before checkIn → ArgumentException
     ///   2. Grace period: total ≤ 30 min → free (lost-ticket penalty still applies)
-    ///   3. Duration: billableHours = ⌈(totalMinutes − 30) / 60⌉, min 1
+    ///   3. Duration: billableHours = ⌈(totalMinutes − 30) / 60⌉, min 1 
     ///   4. Base fee: billableHours × hourlyRate, capped at dailyCap
     ///   5. Overnight: +2,000 KHR if session spans past 22:00
     ///   6. Surcharge: weekend +20% OR holiday +50% on baseFee (not both)
@@ -63,17 +63,20 @@ public class ParkingFeeCalculator
         // TODO: Implement the 9-step fee calculation using TDD.
         // Write a failing test first (RED), then implement just enough to pass (GREEN).
 
+        
+
         // alway checkIn before  checkout
         if(checkOut < checkIn) 
             throw new ArgumentException("Checkin before checkOut");
+        
+
+        var lostTicketPenalty = isLostTicket ? LostTicketPenalty : 0m; //false
 
         var totalMinutes = (checkOut - checkIn).TotalMinutes;
 
         // Lost ticket penalty
         // 31 min
         // If ticket is lost, add 20,000 KHR
-        var lostTicketPenalty = isLostTicket ? LostTicketPenalty : 0m; //false
-
 
         if (totalMinutes <= GracePeriodMinutes)
         {
@@ -84,6 +87,14 @@ public class ParkingFeeCalculator
             };
             
         }
+             ///   3. Duration: billableHours = ⌈(totalMinutes − 30) / 60⌉, min 1
+             var billableHours = Math.Max(1,(int)Math.Ceiling((decimal)(totalMinutes - GracePeriodMinutes) / 60m)); // output 1
+
+             ///   4. Base fee: billableHours × hourlyRate, capped at dailyCap
+
+
+
+             
 
         if (isLostTicket)
         {
@@ -93,7 +104,10 @@ public class ParkingFeeCalculator
             };
         }
 
-       throw new ArgumentException("Implement the 9-step fee calculation using TDD.");
+        return new ParkingFeeResult
+        {
+            TotalFee = billableHours
+        };
 
         
 
