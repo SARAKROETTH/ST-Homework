@@ -55,11 +55,31 @@ public class ParkingFeeCalculatorTests
     #region Basic Fee Calculation
     // Test basic hourly rates for each vehicle type
     // Consider using [Theory] with [InlineData] for multiple scenarios
-    
+    [Theory]
+    [InlineData(VehicleType.Car,1,1000)]
+    [InlineData(VehicleType.Motorcycle,1,500)]
+    [InlineData(VehicleType.SUV,1,1500)]
+    public void Calculate_Basic_Fee(
+        VehicleType vehicleType,
+        int hour,
+        decimal expectValue
+    )
+    {
+        // Arrange
+        var checkIn = new DateTime(2026,12,10,1,0,0 );
+        var checkOut = checkIn.AddHours(hour);
+
+        // Act
+        var result  = _calculator.CalculateFee(vehicleType,MembershipTier.Guest,checkIn,checkOut);
+        // Assert 
+        Assert.Equal(expectValue,result.BaseFee);
+        
+    }    
     #endregion
 
 
-    #region Duration: billableHours 
+    #region Duration Rounding
+    // Test how partial hours are rounded for billing
     [Theory]
     [InlineData(3)]
     [InlineData(2)]
@@ -104,13 +124,6 @@ public class ParkingFeeCalculatorTests
         Assert.Equal("Free",result.Breakdown);
         
     }
-    #endregion
-
-    #region Duration Rounding
-    // Test how partial hours are rounded for billing
-
-
-
     #endregion
 
     #region Daily Cap
@@ -160,10 +173,13 @@ public class ParkingFeeCalculatorTests
 
     #region Edge Cases
     // Test invalid inputs and boundary conditions
+
+
     #endregion
 
     #region Property-Based Tests
     // Write at least 5 FsCheck properties that must hold for ALL valid inputs
+
     // You may need custom Arbitrary<T> for generating valid DateTime pairs
     #endregion
 }

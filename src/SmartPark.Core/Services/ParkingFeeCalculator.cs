@@ -91,6 +91,21 @@ public class ParkingFeeCalculator
              var billableHours = Math.Max(1,(int)Math.Ceiling((decimal)(totalMinutes - GracePeriodMinutes) / 60m)); // output 1
 
              ///   4. Base fee: billableHours × hourlyRate, capped at dailyCap
+            
+            var (hourlyRate, dailyCap) = vehicleType switch
+            {
+            VehicleType.Motorcycle => (MotorcycleRatePerHour, MotorcycleDailyCap),
+            VehicleType.Car => (CarRatePerHour, CarDailyCap),
+            VehicleType.SUV => (SuvRatePerHour, SuvDailyCap),
+
+            _ => throw new ArgumentOutOfRangeException(
+            nameof(vehicleType),
+            vehicleType,
+            "Unsupported vehicle type.")
+        };
+
+        var baseFee = Math.Min(billableHours * hourlyRate,dailyCap);
+
 
 
 
@@ -106,6 +121,7 @@ public class ParkingFeeCalculator
 
         return new ParkingFeeResult
         {
+            BaseFee = baseFee,
             TotalFee = billableHours
         };
 
